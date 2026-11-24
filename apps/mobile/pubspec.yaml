@@ -1,0 +1,12 @@
+name: protoagenticui_mobile
+description: POC Flutter (genui + A2A) — non testé
+publish_to: none
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+dependencies:
+  flutter: { sdk: flutter }
+  genui: ^0.10.0
+  genui_a2a: ^0.10.1
+  unleash_proxy_client_flutter: ^3.0.0
+  flutter_appauth: ^8.0.0
+  http: ^1.2.0

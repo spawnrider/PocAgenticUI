@@ -1,0 +1,126 @@
+# POC omnicanal headless.
+# Démarrage : cp .env.example .env && docker compose up -d
+name: protoagenticui
+
+x-pg-env: &pg-env
+  POSTGRES_USER: ${POSTGRES_USER:-postgres}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      <<: *pg-env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.4
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: ${POSTGRES_USER:-postgres}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      KC_HOSTNAME: http://localhost:8081
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+      KC_HTTP_PORT: 8081
+      KC_HTTP_ENABLED: "true"
+    volumes:
+      - ./infra/keycloak/realm-poc.json:/opt/keycloak/data/import/realm-poc.json:ro
+    ports: ["8081:8081"]
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  unleash:
+    image: unleashorg/unleash-server:7
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/unleash
+      DATABASE_SSL: "false"
+      INIT_CLIENT_API_TOKENS: "default:development.unleash-insecure-client-api-token"
+      INIT_ADMIN_API_TOKENS: "*:*.unleash-insecure-admin-api-token"
+      INIT_FRONTEND_API_TOKENS: "default:development.unleash-insecure-frontend-api-token"
+    ports: ["4242:4242"]
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  strapi:
+    build: ./services/strapi
+    environment:
+      DATABASE_CLIENT: postgres
+      DATABASE_PORT: 5432
+      SEED_DEV: "true"
+      STRAPI_API_TOKEN: ${STRAPI_API_TOKEN:-poc-dev-strapi-read-token}
+      
+      DATABASE_HOST: postgres
+      DATABASE_NAME: strapi
+      DATABASE_USERNAME: ${POSTGRES_USER:-postgres}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      APP_KEYS: ${STRAPI_APP_KEYS:-k1,k2,k3,k4}
+      API_TOKEN_SALT: ${STRAPI_API_TOKEN_SALT:-salt}
+      ADMIN_JWT_SECRET: ${STRAPI_ADMIN_JWT_SECRET:-adminsecret}
+      JWT_SECRET: ${STRAPI_JWT_SECRET:-jwtsecret}
+      TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT:-transfer}
+    ports: ["1337:1337"]
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  mcp-crm:
+    build: ./services/mcp-crm
+    environment:
+      PORT: 3100
+    expose: ["3100"]
+
+  registry:
+    build: ./services/registry
+    environment:
+      PORT: 8090
+    volumes:
+      - ./infra/registry/servers:/data/servers:ro
+    ports: ["8090:8090"]
+
+  agentgateway:
+    image: cr.agentgateway.dev/agentgateway:v1.7.0
+    command: ["-f", "/etc/agentgateway/config.yaml"]
+    volumes:
+      - ./infra/agentgateway/config.yaml:/etc/agentgateway/config.yaml:ro
+    ports: ["3000:3000", "15000:15000"]
+    depends_on: [keycloak, mcp-crm]
+
+  bff:
+    build:
+      context: .
+      dockerfile: services/bff/Dockerfile
+    env_file: .env
+    environment:
+      PORT: 4000
+      STRAPI_URL: http://strapi:1337
+      UNLEASH_URL: http://unleash:4242/api
+      REDIS_URL: redis://redis:6379
+    ports: ["4000:4000"]
+    depends_on: [strapi, unleash, redis]
+
+  agent:
+    build:
+      context: .
+      dockerfile: services/agent/Dockerfile
+    env_file: .env
+    environment:
+      PORT: 4111
+      MCP_GATEWAY_URL: http://agentgateway:3000/mcp
+      DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/agent
+    ports: ["4111:4111"]
+    depends_on: [agentgateway, postgres]
+
+volumes:
+  pgdata:

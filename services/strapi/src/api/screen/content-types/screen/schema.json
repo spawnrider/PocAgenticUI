@@ -1,0 +1,14 @@
+{
+  "kind": "collectionType",
+  "collectionName": "screens",
+  "info": { "singularName": "screen", "pluralName": "screens", "displayName": "Screen" },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "slug": { "type": "uid" },
+    "title": { "type": "string" },
+    "sections": {
+      "type": "dynamiczone",
+      "components": ["sections.banner", "sections.text"]
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "protoagenticui",
+  "private": true,
+  "workspaces": ["packages/*", "services/bff", "services/agent", "services/mcp-crm", "services/registry", "apps/web"],
+  "scripts": {
+    "typecheck": "for d in services/bff services/agent services/mcp-crm services/registry apps/web; do npx tsc --noEmit -p $d || exit 1; done",
+    "test": "npm test -w @poc/bff"
+  }
+}

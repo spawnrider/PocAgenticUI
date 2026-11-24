@@ -1,0 +1,5 @@
+{ "collectionName": "components_sections_blocks", "info": { "displayName": "Block" },
+  "attributes": {
+    "component": { "type": "enumeration", "enum": ["Text","OfferBanner","CustomerCard"] },
+    "props": { "type": "json" },
+    "flagKey": { "type": "string" } } }

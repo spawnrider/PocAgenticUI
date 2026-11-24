@@ -1,0 +1,30 @@
+# agentgateway standalone — NON VÉRIFIÉ : valider les noms de champs contre la doc de la version utilisée.
+binds:
+- port: 3000
+  listeners:
+  - routes:
+    - matches:
+      - path: { pathPrefix: /mcp }
+      policies:
+        cors:
+          allowOrigins: ["*"]
+          allowHeaders: ["*"]
+        mcpAuthentication:
+          issuer: http://localhost:8081/realms/poc
+          audiences: [agentgateway]
+          jwks:
+            url: http://keycloak:8081/realms/poc/protocol/openid-connect/certs
+          resourceMetadata:
+            resource: http://localhost:3000/mcp
+            scopesSupported: [crm.read, crm.write]
+            bearerMethodsSupported: [header]
+        mcpAuthorization:
+          rules:
+          - 'mcp.tool.name == "crm_get_customer"'
+          - 'mcp.tool.name == "crm_update_email" && "crm-writer" in jwt.roles'
+      backends:
+      - mcp:
+          targets:
+          - name: crm
+            mcp:
+              host: http://mcp-crm:3100/mcp

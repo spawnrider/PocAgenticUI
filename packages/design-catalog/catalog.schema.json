@@ -1,0 +1,9 @@
+{
+  "$comment": "Catalogue de composants partagé (source de vérité). Flutter et web doivent implémenter ces composants.",
+  "components": {
+    "Text": { "props": { "text": "string" } },
+    "Banner": { "props": { "title": "string", "body": "string" } },
+    "CustomerCard": { "props": { "name": "string", "email": "string", "tier": "string" } },
+    "ConfirmAction": { "props": { "summary": "string", "confirmLabel": "string", "cancelLabel": "string" } }
+  }
+}

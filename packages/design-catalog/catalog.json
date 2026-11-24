@@ -1,0 +1,8 @@
+{ "catalogId": "poc-catalog/v1",
+  "components": {
+    "Text": { "props": { "text": "string" } },
+    "Button": { "props": { "label": "string", "action": "string" } },
+    "CustomerCard": { "props": { "name": "string", "email": "string", "tier": "string" } },
+    "OfferBanner": { "props": { "title": "string", "cta": "string" } },
+    "ConfirmAction": { "props": { "summary": "string", "confirmLabel": "string", "cancelLabel": "string" } }
+  } }

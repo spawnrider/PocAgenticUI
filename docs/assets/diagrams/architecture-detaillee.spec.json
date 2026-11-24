@@ -1,0 +1,338 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "ProtoAgenticUI — Architecture détaillée",
+    "subtitle": "POC omnicanal headless : UI pilotée par le serveur (A2UI), agent Mastra (AG-UI), outils MCP derrière agentgateway",
+    "output": "architecture-detaillee.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "web",
+      "type": "frontend",
+      "label": "Next.js",
+      "sublabel": "CopilotKit + @a2ui/react",
+      "pos": [
+        260,
+        60
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "mobile",
+      "type": "frontend",
+      "label": "Flutter",
+      "sublabel": "genui",
+      "pos": [
+        700,
+        60
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "bff",
+      "type": "backend",
+      "label": "BFF",
+      "sublabel": "SDUI · cache · flags :4000",
+      "pos": [
+        260,
+        230
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "agent",
+      "type": "backend",
+      "label": "Service agent",
+      "sublabel": "Mastra + A2UI :4111",
+      "pos": [
+        700,
+        230
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "redis",
+      "type": "database",
+      "label": "Redis",
+      "sublabel": "cache écrans",
+      "pos": [
+        40,
+        230
+      ],
+      "size": [
+        140,
+        64
+      ]
+    },
+    {
+      "id": "strapi",
+      "type": "backend",
+      "label": "Strapi",
+      "sublabel": "CMS écrans SDUI :1337",
+      "pos": [
+        260,
+        400
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "unleash",
+      "type": "cloud",
+      "label": "Unleash",
+      "sublabel": "feature flags :4242",
+      "pos": [
+        480,
+        400
+      ],
+      "size": [
+        140,
+        64
+      ]
+    },
+    {
+      "id": "gateway",
+      "type": "security",
+      "label": "agentgateway",
+      "sublabel": "authN/authZ MCP :3000",
+      "pos": [
+        700,
+        400
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "keycloak",
+      "type": "security",
+      "label": "Keycloak",
+      "sublabel": "OIDC realm poc :8081",
+      "pos": [
+        940,
+        400
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "postgres",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "strapi · agent · keycloak",
+      "pos": [
+        260,
+        570
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "registry",
+      "type": "backend",
+      "label": "Registre",
+      "sublabel": "server.json :8090",
+      "pos": [
+        480,
+        570
+      ],
+      "size": [
+        140,
+        64
+      ]
+    },
+    {
+      "id": "crm",
+      "type": "backend",
+      "label": "MCP CRM",
+      "sublabel": "outils crm_* :3100",
+      "pos": [
+        700,
+        570
+      ],
+      "size": [
+        160,
+        64
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "docker compose : protoagenticui",
+      "wraps": [
+        "bff",
+        "agent",
+        "redis",
+        "strapi",
+        "unleash",
+        "gateway",
+        "keycloak",
+        "postgres",
+        "registry",
+        "crm"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "web-bff",
+      "from": "web",
+      "to": "bff",
+      "label": "REST",
+      "variant": "emphasis",
+      "labelAt": [
+        340,
+        177
+      ]
+    },
+    {
+      "id": "web-agent",
+      "from": "web",
+      "to": "agent",
+      "label": "AG-UI"
+    },
+    {
+      "id": "mobile-agent",
+      "from": "mobile",
+      "to": "agent",
+      "label": "A2A",
+      "variant": "emphasis",
+      "labelAt": [
+        780,
+        177
+      ]
+    },
+    {
+      "id": "bff-redis",
+      "from": "bff",
+      "to": "redis",
+      "label": "cache"
+    },
+    {
+      "id": "bff-strapi",
+      "from": "bff",
+      "to": "strapi",
+      "label": "écrans",
+      "labelAt": [
+        340,
+        347
+      ]
+    },
+    {
+      "id": "bff-unleash",
+      "from": "bff",
+      "to": "unleash",
+      "label": "flags",
+      "variant": "dashed"
+    },
+    {
+      "id": "agent-unleash",
+      "from": "agent",
+      "to": "unleash",
+      "label": "flags",
+      "variant": "dashed"
+    },
+    {
+      "id": "agent-gateway",
+      "from": "agent",
+      "to": "gateway",
+      "label": "MCP",
+      "variant": "emphasis",
+      "labelAt": [
+        780,
+        347
+      ]
+    },
+    {
+      "id": "agent-keycloak",
+      "from": "agent",
+      "to": "keycloak",
+      "label": "token exchange",
+      "variant": "security",
+      "fromSide": "right",
+      "toSide": "top"
+    },
+    {
+      "id": "gateway-keycloak",
+      "from": "gateway",
+      "to": "keycloak",
+      "label": "JWKS",
+      "variant": "security"
+    },
+    {
+      "id": "gateway-crm",
+      "from": "gateway",
+      "to": "crm",
+      "label": "MCP",
+      "labelAt": [
+        780,
+        517
+      ]
+    },
+    {
+      "id": "gateway-registry",
+      "from": "gateway",
+      "to": "registry",
+      "label": "découverte",
+      "variant": "dashed"
+    },
+    {
+      "id": "strapi-pg",
+      "from": "strapi",
+      "to": "postgres",
+      "label": "SQL",
+      "labelAt": [
+        340,
+        517
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Canaux",
+      "items": [
+        "Next.js : REST vers BFF, AG-UI vers agent",
+        "Flutter : écrans SDUI et A2A"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Sécurité",
+      "items": [
+        "JWT Keycloak validé par agentgateway",
+        "Écritures MCP via ConfirmAction"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Données",
+      "items": [
+        "PostgreSQL partagé (3 bases)",
+        "Redis : cache des écrans"
+      ]
+    }
+  ]
+}

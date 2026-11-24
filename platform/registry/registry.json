@@ -1,2 +1,0 @@
-{ "servers": [ { "name": "poc/mcp-crm", "description": "CRM factice (clients, contacts)",
-  "remotes": [ { "type": "streamable-http", "url": "http://agentgateway:3000/mcp" } ] } ] }

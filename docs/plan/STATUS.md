@@ -4,7 +4,7 @@ Dernière mise à jour : 2026-11-24. Vérifié sur macOS + OrbStack (Docker), No
 
 | Tâche | Résultat | Écarts constatés |
 |---|---|---|
-| T0.1–T0.4 workspaces, tsconfig, pins, git | ✅ `npm install`, `npm run typecheck` verts ; versions épinglées (Mastra 1.85.0, @mastra/mcp 2.10.0, @ag-ui/mastra 2.0.2, CopilotKit 1.90.2, @a2ui/react 0.15.0, next 15.5.29, agentgateway v1.7.0, Strapi 5.63.0) | Mastra exige zod ^4 (agent, mcp-crm) ; apps/web reste en zod 3 (peer d'@a2ui/react). Doublons conservés : dossier `platform/` (ancien brouillon) et `services/bff/src/index.ts`, `services/mcp-crm/src/index.ts` (exclus du typecheck) — à supprimer. |
+| T0.1–T0.4 workspaces, tsconfig, pins, git | ✅ `npm install`, `npm run typecheck` verts ; versions épinglées (Mastra 1.85.0, @mastra/mcp 2.10.0, @ag-ui/mastra 2.0.2, CopilotKit 1.90.2, @a2ui/react 0.15.0, next 15.5.29, agentgateway v1.7.0, Strapi 5.63.0) | Mastra exige zod ^4 (agent, mcp-crm) ; apps/web reste en zod 3 (peer d'@a2ui/react). Doublons de l'ancien squelette supprimés (`platform/`, anciens `index.ts`). |
 | T1.1 Keycloak/Unleash/Postgres | ✅ `.well-known` répond sur :8081, Unleash :4242 | Realm : ajout bob, `agent-service`, `poc-cli`, mappers (audience, claim `roles`), rôle client `agentgateway/access`. `KC_HOSTNAME_BACKCHANNEL_DYNAMIC`. Unleash épinglé `7`. |
 | T1.2 Strapi | ✅ projet généré (JS), `GET /api/screens` → 200 avec token, 403 sans | Routes/contrôleur/service manquaient. Seed dev (`SEED_DEV=true`) : token lecture seule à valeur fixe + écran `home`. |
 | T1.3 flags Unleash | ✅ `scripts/seed-unleash.sh` | Token admin dev via `INIT_ADMIN_API_TOKENS` (appliqué seulement à l'init de la base). |

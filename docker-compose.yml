@@ -118,6 +118,7 @@ services:
     environment:
       PORT: 4111
       MCP_GATEWAY_URL: http://agentgateway:3000/mcp
+      UNLEASH_URL: http://unleash:4242/api
       DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/agent
     ports: ["4111:4111"]
     depends_on: [agentgateway, postgres]

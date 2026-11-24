@@ -10,7 +10,14 @@
       {
         "name": "crm-writer"
       }
-    ]
+    ],
+    "client": {
+      "agentgateway": [
+        {
+          "name": "access"
+        }
+      ]
+    }
   },
   "clients": [
     {
@@ -177,7 +184,12 @@
       "realmRoles": [
         "crm-reader",
         "crm-writer"
-      ]
+      ],
+      "clientRoles": {
+        "agentgateway": [
+          "access"
+        ]
+      }
     },
     {
       "username": "bob",
@@ -195,7 +207,12 @@
       ],
       "realmRoles": [
         "crm-reader"
-      ]
+      ],
+      "clientRoles": {
+        "agentgateway": [
+          "access"
+        ]
+      }
     }
   ]
 }

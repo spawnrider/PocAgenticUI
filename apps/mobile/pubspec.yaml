@@ -1,12 +1,14 @@
 name: protoagenticui_mobile
-description: POC Flutter (genui + A2A) — non testé
+description: POC Flutter — écran SDUI (BFF) + chat agent (AG-UI/SSE), rendu A2UI v0.9. NON VÉRIFIÉ (pas de SDK Flutter lors de l'écriture).
 publish_to: none
 environment:
   sdk: ">=3.5.0 <4.0.0"
 dependencies:
   flutter: { sdk: flutter }
-  genui: ^0.10.0
-  genui_a2a: ^0.10.1
-  unleash_proxy_client_flutter: ^3.0.0
   flutter_appauth: ^8.0.0
   http: ^1.2.0
+dev_dependencies:
+  flutter_test: { sdk: flutter }
+  flutter_lints: ^5.0.0
+flutter:
+  uses-material-design: true

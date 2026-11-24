@@ -6,3 +6,5 @@ build
 .cache
 dist
 .tmp
+.venv-docs
+site

@@ -3,11 +3,13 @@
 POC omnicanal headless, 100 % TypeScript côté serveur, standards ouverts. Le squelette existe mais **n'a jamais été exécuté** : traite tout le code actuel comme un brouillon à valider.
 
 ## Lire d'abord
+0. `docs/architecture/README.md` — le « pourquoi » (doc d'architecture transposée du Claude Doc).
 1. `docs/specs/00-architecture.md` — composants, flux, décisions figées.
 2. `docs/specs/01-contrats.md` — contrats entre composants (A2UI, MCP, auth, flags).
 3. `docs/plan/00-plan.md` — phases ordonnées, critères d'acceptation, commandes de vérification.
 
 ## Règles de travail
+- **Le dépôt est la source documentaire** : toute décision d'architecture mise à jour va dans `docs/architecture/` (et `docs/specs/` si un contrat change), dans le même commit que le code.
 - Avance **phase par phase**, dans l'ordre. Ne passe à la suivante que si les critères d'acceptation sont verts.
 - **Vérifie avant de coder** : pour toute lib marquée « À VÉRIFIER » (Mastra, @ag-ui/mastra, @a2ui/react, genui, agentgateway), lis la doc/les types installés (`node_modules/*/dist/*.d.ts`, `dart pub deps`) plutôt que de deviner une API. Si la réalité diffère des specs, corrige le code **et** mets à jour la spec dans le même commit.
 - Épingle chaque dépendance `latest` à la version réellement installée (lockfile commité).

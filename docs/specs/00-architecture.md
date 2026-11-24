@@ -31,5 +31,7 @@ Prouver, sur Docker Compose : (1) un écran piloté par Strapi (SDUI) rendu sur 
 - Mastra pour l'agent (Agent, MCPClient, outils) ; le serveur HTTP est un Express maison (`services/agent/src/server.ts`) qui expose l'agent via `MastraAgent` de `@ag-ui/mastra`, construit **par requête**. `mastra dev` n'est pas utilisé.
 - Garde-fou d'écriture **côté serveur** (table Postgres `pending_actions`) : indépendant du LLM.
 
+Décisions détaillées : `docs/adr/`.
+
 ## Hors périmètre
 Kubernetes, observabilité complète (Langfuse/OTel optionnels en phase 7), multi-tenant.
